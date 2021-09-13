@@ -6,19 +6,44 @@ var ctx = canvas.getContext("2d")
 var matchValues = Array()
 
 document.getElementById("videoUpload").onchange = (event) => {
+    resetEverything()
     let file = event.target.files[0]
     let blobUrl = URL.createObjectURL(file)
     video.src = blobUrl
+    document.getElementById("searchFrames").disabled = false
 }
 
 document.getElementById("searchFrames").onclick = async () => {
+    setLoadingScreen("on")
     await captureFrame()
     compareFrames()
-    document.getElementById("createGifDiv").style.display = "block"
+    document.getElementById("thirdStep").style.display = "block"
+    document.getElementById("searchFrames").disabled = true
+    setLoadingScreen("off")
 }
 
 document.getElementById("createGif").onclick = () => {
     createGIF(document.getElementById("inputFrame").value)
+}
+
+function resetVariables(){
+    frames = Array()
+    matchValues = Array()
+}
+
+function resetEverything(){
+    resetVariables()
+    document.getElementById("thirdSteè").style.display = "none"
+    document.getElementById("searchFrames").disabled = true
+}
+
+function setLoadingScreen(status){
+    if(status == "on"){
+        document.getElementById("loadingScreen").style.display = "block"
+    }
+    else if(status == "off"){
+        document.getElementById("loadingScreen").style.display = "none"
+    }
 }
 
 async function captureFrame(){
@@ -46,9 +71,9 @@ function compareFrames(){
 
 function calcDelay(){
     let fps = document.getElementById("inputFPS").value
-    if(fps == null)
+    if(fps == "")
         fps = 24
-    return Math.round((1 / document.getElementById("inputFPS").value) * 1000);
+    return Math.round((1 / fps) * 1000);
 }
 
 function createGIF(lastFrame){
