@@ -5,6 +5,22 @@ var canvas = document.getElementById("frame")
 var ctx = canvas.getContext("2d")
 var matchValues = Array()
 
+document.getElementById("videoUpload").onchange = (event) => {
+    let file = event.target.files[0]
+    let blobUrl = URL.createObjectURL(file)
+    video.src = blobUrl
+}
+
+document.getElementById("searchFrames").onclick = async () => {
+    await captureFrame()
+    compareFrames()
+    document.getElementById("createGifDiv").style.display = "block"
+}
+
+document.getElementById("createGif").onclick = () => {
+    createGIF(document.getElementById("inputFrame").value)
+}
+
 async function captureFrame(){
     for(let i = 0; i < GIF_LENGTH; i++){
         canvas.height = video.videoHeight
@@ -17,42 +33,34 @@ async function captureFrame(){
 }
 
 function compareFrames(){
-    /*let baseFrame = frames[0]
-    for(let i = 1; i < frames.length; i++){
-        if(frames[i] == baseFrame)
-            console.log("Found another frame identical to baseFrame, id: " + i + "\n")
-    }*/
-    let differentFrameFound = false
     for(let i = 0; i < GIF_LENGTH; i++){
-        matchValues[i] = pixelmatch(frames[0].data, frames[i].data, null, video.videoWidth, video.videoHeight)
-    }
-    for(let i = 0; i < matchValues.length; i++){
-        if(differentFrameFound && matchValues[i] == 0){
-            console.log("Found suitable frame, number " + i)
-            return i;
-        }
-        else if(matchValues[i] != 0){
-            differentFrameFound = true
+        matchValues[i] = {
+            value: pixelmatch(frames[0].data, frames[i].data, null, video.videoWidth, video.videoHeight, {threshold: 0.2}),
+            index: i
         }
     }
-    console.log("No suitable frame found.")
-    return null;
+    matchValues.sort((a, b) => {
+        return a.value - b.value;
+    })
 }
 
-function compareStrings(str1, str2){
-    for(let i = 0; i < str1.length; i++){
-        if(str1[i] != str2[i])
-            return "Letter " + str1[i] + " at index " + i
-    }
+function calcDelay(){
+    let fps = document.getElementById("inputFPS").value
+    if(fps == null)
+        fps = 24
+    return Math.round((1 / document.getElementById("inputFPS").value) * 1000);
 }
 
 function createGIF(lastFrame){
+    let delay = calcDelay()
     var gif = new GIF({
-        workers: 2,
-        quality: 10
+        workers: 4,
+        quality: 10,
+        width: video.videoWidth,
+        height: video.videoHeight
     })
     for(let i = 0; i < lastFrame; i++){
-        gif.addFrame(frames[i])
+        gif.addFrame(frames[i], {delay: delay}) // 1s / n°fps = delay
     }
     gif.on("finished", (blob) => {
         window.open(URL.createObjectURL(blob))

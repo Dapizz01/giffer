@@ -1,6 +1,6 @@
 # giffer
-A website that builds a gif from a video
-## Status
-Project put on hold, because:
-1. Cannot access gif.worker.js in local
-2. Can access gif.worker.js using a web server, but Firefox blocks getImageData() in the canvas for security reasons, so it's impossible to get the canvas data
+## What is it?
+A website that automatically finds a similar frame to a chosen one and builds a loop gif from a video.
+## Requirements
+1. This website runs only on Firefox
+2. Must set privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts to false
