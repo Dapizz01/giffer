@@ -18,38 +18,49 @@
         <div class="w3-panel w3-orange w3-display-container w3-padding-16 w3-center">
             <span onclick="this.parentElement.style.display='none'" class="w3-button w3-orange w3-large w3-display-topright">X</span>
             Welcome to Giffer!<br>
-            This website allows to create a new loop GIF. Input a video, set the starting frame, the end frame and the framerate and the page will generate a new GIF file.<br>
+            This website allows to create a new loop GIF (up to 100 frame). Input a video, set the starting frame, the end frame and the framerate and the page will generate a new GIF file.<br>
+            It's recommended to visit this website with a PC to have a smaller wait time.<br>
             <br>
-            <span class="w3-red w3-padding-16">Important: this page is functional only in Firefox, and the flag privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts in about:config must be OFF.</span>
+            <span class="w3-red w3-padding-4">Important: this page is functional only in Firefox, and the flag privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts in about:config must be OFF.</span><br>
+            Remember to turn on again the flag after using this page, it's important for your own privacy.<br>
+            The code is open source, if you want, you can take a look at the GitHub repo: <br>
         </div>
         <div id="firstStep" class="w3-panel w3-light-blue w3-center">
             <div id="firstStepExplanation" class="w3-container w3-indigo">
-                <span class="w3-xlarge">Step 1</span><br>
+                <span class="w3-xlarge"><b>Step 1</b></span><br>
                 Insert the video here.<br> 
                 It's recommended to NOT insert very long videos or ultra high resolutions videos (for example 2K or 4K), otherwise the time needed for the operation will be longer than usual.
             </div>
-            <input type="file" id="videoUpload">
+            <input type="file" id="videoUpload" class="w3-input w3-indigo">
         </div>
         <div id="secondStep" class="w3-panel w3-cyan w3-center">
             <div id="secondStepExplanation" class="w3-container w3-indigo">
-                <span class="w3-xlarge">Step 2</span><br>
+                <span class="w3-xlarge"><b>Step 2</b></span><br>
                 Set the video to the starting frame of the GIF.
             </div>
             <video id="video" controls>No video</video>
             <canvas id="frame"></canvas>
-            <button id="searchFrames" disabled>Search frames</button>
+            <button id="searchFrames" class="w3-button w3-indigo" disabled>Search frames</button>
         </div>
         <div id="thirdStep" class="w3-panel w3-blue w3-center">
             <div id="thirdStepExplanation" class="w3-container w3-indigo">
-                <span class="w3-xlarge">Step 3</span><br>
+                <span class="w3-xlarge"><b>Step 3</b></span><br>
                 Now there's a list of suggested frames to set as the last frame of the GIF.<br>
                 "value" is the difference in pixels between the starting frame and a particular frame, usually the lower the better.<br>
                 Input the last frame number and the framerate of the original video (by default it's 24 FPS)<br>
                 Lastly, click "Create GIF" and a new page will show up with the newly created GIF.
             </div>
-            <input type="text" id="inputFrame" placeholder="Insert the end frame">
-            <input type="text" id="inputFPS" placeholder="Insert FPS of the video (default 24)">
-            <button id="createGif">Create GIF</button>
+            <div id="frameSuggestionsContainer">
+                <table id="frameSuggestions">
+                    <tr>
+                        <th>Frame</th>
+                        <th>Difference value</th>
+                    </tr>
+                </table>
+            </div>
+            <input type="text" id="inputFrame" class="w3-input" placeholder="Insert the end frame">
+            <input type="text" id="inputFPS" class="w3-input" placeholder="Insert FPS of the video (default 24)">
+            <button id="createGif" class="w3-button w3-indigo">Create GIF</button>
             <script src="js/videoFrames.js"></script>
         </div>
         <div id="loadingScreen">

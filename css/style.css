@@ -26,3 +26,39 @@
 #loadingMessage{
     margin: auto;
 }
+
+td{
+    padding: 5px;
+}
+
+table{
+    display: table;
+    text-align: center;
+    width: 50%;
+}
+
+#frameSuggestionsContainer{
+    margin: 20px 0px;
+    display: flex;
+    max-height: 500px;
+    overflow: auto;
+    width: 100%;
+    justify-content: center;
+    align-content: center;
+}
+
+video{
+    margin: 20px 0px;
+    width: 100%;
+}
+
+input{
+    width: 50%;
+    margin: auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+button{
+    margin-bottom: 20px;
+}

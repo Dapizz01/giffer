@@ -4,26 +4,47 @@ var frames = Array()
 var canvas = document.getElementById("frame")
 var ctx = canvas.getContext("2d")
 var matchValues = Array()
+var createdGIF
+var videoURL
 
 document.getElementById("videoUpload").onchange = (event) => {
-    resetEverything()
-    let file = event.target.files[0]
-    let blobUrl = URL.createObjectURL(file)
-    video.src = blobUrl
-    document.getElementById("searchFrames").disabled = false
+    try{
+        if(HTMLMediaElement.prototype.seekToNextFrame){
+            resetEverything()
+            let file = event.target.files[0]
+            videoURL = URL.createObjectURL(file)
+            video.src = videoURL
+            document.getElementById("searchFrames").disabled = false
+        }
+        else
+            throw "Attention! It seems you're not using Firefox (or any other browser with Gecko). This website will not work correctly in Google Chrome or similar browsers."
+    }
+    catch(e){
+        alert(e)
+    }
 }
 
 document.getElementById("searchFrames").onclick = async () => {
-    setLoadingScreen("on")
-    await captureFrame()
-    compareFrames()
-    document.getElementById("thirdStep").style.display = "block"
-    document.getElementById("searchFrames").disabled = true
-    setLoadingScreen("off")
+    try{
+        setLoadingScreen("on")
+        await captureFrame()
+        compareFrames()
+        document.getElementById("thirdStep").style.display = "block"
+        document.getElementById("searchFrames").disabled = true
+        setLoadingScreen("off")
+    }
+    catch(e){
+        alert(e)
+    }
 }
 
 document.getElementById("createGif").onclick = () => {
-    createGIF(document.getElementById("inputFrame").value)
+    try{
+        createGIF(document.getElementById("inputFrame").value)
+    }
+    catch(e){
+        alert(e)
+    }
 }
 
 function resetVariables(){
@@ -33,8 +54,12 @@ function resetVariables(){
 
 function resetEverything(){
     resetVariables()
-    document.getElementById("thirdSteè").style.display = "none"
+    document.getElementById("thirdStep").style.display = "none"
     document.getElementById("searchFrames").disabled = true
+    let table = document.getElementById("frameSuggestions")
+    for(let i = 1; i < table.rows.length; i++){
+        table.deleteRow(i)
+    }
 }
 
 function setLoadingScreen(status){
@@ -67,6 +92,18 @@ function compareFrames(){
     matchValues.sort((a, b) => {
         return a.value - b.value;
     })
+    for(let i = 0; i < GIF_LENGTH; i++){
+        setFrameSuggestion(matchValues[i].index, matchValues[i].value)
+    }
+}
+
+function setFrameSuggestion(index, value){
+    let table = document.getElementById("frameSuggestions")
+    let row = table.insertRow()
+    let td1 = row.insertCell()
+    let td2 = row.insertCell()
+    td1.innerHTML = index
+    td2.innerHTML = value
 }
 
 function calcDelay(){
@@ -78,6 +115,8 @@ function calcDelay(){
 
 function createGIF(lastFrame){
     let delay = calcDelay()
+    if(lastFrame == undefined || lastFrame == null || lastFrame > 100 || lastFrame < 0)
+        throw "Error! The chosen last frame is not valid!"
     var gif = new GIF({
         workers: 4,
         quality: 10,
@@ -88,7 +127,8 @@ function createGIF(lastFrame){
         gif.addFrame(frames[i], {delay: delay}) // 1s / n°fps = delay
     }
     gif.on("finished", (blob) => {
-        window.open(URL.createObjectURL(blob))
+        createdGIF = URL.createObjectURL(blob) 
+        window.open(createdGIF)
     })
     gif.render()
 }
