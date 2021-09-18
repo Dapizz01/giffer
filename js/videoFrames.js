@@ -40,11 +40,16 @@ document.getElementById("searchFrames").onclick = async () => {
 
 document.getElementById("createGif").onclick = () => {
     try{
+        setLoadingScreen("on")
         createGIF(document.getElementById("inputFrame").value)
     }
     catch(e){
         alert(e)
     }
+}
+
+document.getElementById("qualitySlider").onchange = () => {
+    document.getElementById("qualitySliderValue").innerText = document.getElementById("qualitySlider").value
 }
 
 function resetVariables(){
@@ -57,9 +62,7 @@ function resetEverything(){
     document.getElementById("thirdStep").style.display = "none"
     document.getElementById("searchFrames").disabled = true
     let table = document.getElementById("frameSuggestions")
-    for(let i = 1; i < table.rows.length; i++){
-        table.deleteRow(i)
-    }
+    document.getElementsByTagName("tbody")[0].innerHTML = table.rows[0].innerHTML
 }
 
 function setLoadingScreen(status){
@@ -115,11 +118,12 @@ function calcDelay(){
 
 function createGIF(lastFrame){
     let delay = calcDelay()
+    let quality = document.getElementById("qualitySlider").value
     if(lastFrame == undefined || lastFrame == null || lastFrame > 100 || lastFrame < 0)
         throw "Error! The chosen last frame is not valid!"
     var gif = new GIF({
         workers: 4,
-        quality: 10,
+        quality: quality,
         width: video.videoWidth,
         height: video.videoHeight
     })
@@ -127,6 +131,7 @@ function createGIF(lastFrame){
         gif.addFrame(frames[i], {delay: delay}) // 1s / n°fps = delay
     }
     gif.on("finished", (blob) => {
+        setLoadingScreen("off")
         createdGIF = URL.createObjectURL(blob) 
         window.open(createdGIF)
     })
