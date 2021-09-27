@@ -31,6 +31,7 @@ document.getElementById("searchFrames").onclick = async () => {
         compareFrames()
         document.getElementById("thirdStep").style.display = "block"
         document.getElementById("searchFrames").disabled = true
+        setOriginalFrame(frames[0])
         setLoadingScreen("off")
     }
     catch(e){
@@ -41,7 +42,9 @@ document.getElementById("searchFrames").onclick = async () => {
 document.getElementById("createGif").onclick = () => {
     try{
         setLoadingScreen("on")
-        createGIF(document.getElementById("inputFrame").value)
+        let select = document.getElementById("frameSuggestions")
+        let selectedFrame = select.options[select.selectedIndex].value
+        createGIF(selectedFrame)
     }
     catch(e){
         alert(e)
@@ -50,6 +53,12 @@ document.getElementById("createGif").onclick = () => {
 
 document.getElementById("qualitySlider").onchange = () => {
     document.getElementById("qualitySliderValue").innerText = document.getElementById("qualitySlider").value
+}
+
+document.getElementById("frameSuggestions").onclick = () => {
+    let select = document.getElementById("frameSuggestions")
+    let selectedFrame = select.options[select.selectedIndex].value
+    setNewFrame(frames[selectedFrame])
 }
 
 function resetVariables(){
@@ -62,7 +71,7 @@ function resetEverything(){
     document.getElementById("thirdStep").style.display = "none"
     document.getElementById("searchFrames").disabled = true
     let table = document.getElementById("frameSuggestions")
-    document.getElementsByTagName("tbody")[0].innerHTML = table.rows[0].innerHTML
+    document.getElementsByTagName("select")[0].innerHTML = ""
 }
 
 function setLoadingScreen(status){
@@ -100,13 +109,30 @@ function compareFrames(){
     }
 }
 
+function setOriginalFrame(frame){
+    let originalCanvas = document.getElementById("originalFrame")
+    let originalContext = originalCanvas.getContext("2d")
+
+    originalCanvas.width = video.videoWidth
+    originalCanvas.height = video.videoHeight
+
+    originalContext.putImageData(frame, 0, 0)
+}
+
+function setNewFrame(frame){
+    let newCanvas = document.getElementById("newFrame")
+    let newContext = newCanvas.getContext("2d")
+
+    newCanvas.width = video.videoWidth
+    newCanvas.height = video.videoHeight
+
+    newContext.putImageData(frame, 0, 0)
+}
+
 function setFrameSuggestion(index, value){
-    let table = document.getElementById("frameSuggestions")
-    let row = table.insertRow()
-    let td1 = row.insertCell()
-    let td2 = row.insertCell()
-    td1.innerHTML = index
-    td2.innerHTML = value
+    let select = document.getElementById("frameSuggestions")
+    let newOption = new Option("Frame " + index + ", value " + value, index)
+    select.add(newOption)
 }
 
 function calcDelay(){

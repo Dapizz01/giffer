@@ -51,14 +51,13 @@
                 Lastly, click "Create GIF" and a new page will show up with the newly created GIF.
             </div>
             <div id="frameSuggestionsContainer">
-                <table id="frameSuggestions">
-                    <tr>
-                        <th>Frame</th>
-                        <th>Difference value</th>
-                    </tr>
-                </table>
+                <select id="frameSuggestions" size="10">
+                </select>
             </div>
-            <input type="text" id="inputFrame" class="w3-input" placeholder="Insert the end frame">
+            <p>First frame:</p>
+            <canvas id="originalFrame"></canvas>
+            <p>Last frame:</p>
+            <canvas id="newFrame"></canvas>
             <input type="text" id="inputFPS" class="w3-input" placeholder="Insert FPS of the video (default 24)">
             <div id="qualitySliderContainer">
                 <span>This slider represents the quality of the final GIF, the lower the better</span><br>
